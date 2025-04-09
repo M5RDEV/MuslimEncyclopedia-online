@@ -1,0 +1,770 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Traditional Arabic', 'Amiri', serif;
+}
+
+:root {
+    --primary-color: #3a7e4f;
+    --secondary-color: #e8f5e9;
+    --accent-color: #1b5e20;
+    --light-bg: #f9f9f9;
+    --dark-text: #333;
+    --light-text: #fff;
+    --border-color: #ddd;
+    --overlay-color: rgba(0, 0, 0, 0.7);
+    --box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Header Section */
+header {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.logo h1 {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo img {
+    width: 40px;
+    margin-left: 15px;
+}
+
+/* Prayer Times */
+.prayer-times {
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    margin: 30px 0 30px 0;
+}
+
+.prayer-times h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 30px;
+}
+
+.times-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.prayer-time {
+    background-color: var(--secondary-color);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.prayer-time:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    background-color: #d7eeda;
+}
+
+.prayer-time h3 {
+    font-size: 23px;
+    color: var(--primary-color);
+}
+
+.prayer-time p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Section Title */
+.section-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin: 20px;
+    font-size: 30px;
+    position: relative;
+}
+
+/* Quran Section */
+.quran-section {
+    background-color: var(--secondary-color);
+    padding: 40px 20px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+}
+
+.quran-section h2 {
+    color: var(--primary-color);
+    text-align: center;
+    position: relative;
+    margin: 0px;
+}
+
+.quran-section p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.quran-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.quran-option {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    width: 320px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.quran-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.quran-option h3 {
+    color: var(--primary-color);
+    margin-bottom: 1px;
+    font-size: 22px;
+}
+
+.quran-option p {
+    margin-bottom: 30px;
+    color: #555;
+    font-size: 18px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 15px 20px;
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+}
+
+.cta-button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Hidden Content */
+.hidden-content {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-list {
+    text-align: right;
+    list-style-position: inside;
+    padding: 0;
+}
+
+.content-list li {
+    margin-bottom: 8px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.content-list li:last-child {
+    border-bottom: none;
+}
+
+.reciter-list,
+.mushaf-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.reciter-list li,
+.mushaf-type {
+    padding: 8px;
+    background-color: #f0f7f1;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.reciter-list li:hover,
+.mushaf-type:hover {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+/* Main Categories */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.categories-grid p {
+    font-size: 19px;
+}
+
+.category-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.category-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.category-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-size: 22px;
+}
+
+.category-card p {
+    color: #272727;
+    margin-bottom: 15px;
+    min-height: 50px;
+}
+
+/* تنسيق الأيقونة داخل البطاقة */
+.category-card i {
+    font-size: 30px;
+    /* تحديد حجم الأيقونة */
+    color: #000;
+    /* اللون الافتراضي للأيقونة */
+    position: center;
+    cursor: pointer;
+    /* تغيير شكل المؤشر ليعبر عن قابلية النقر */
+    transform: rotate(180deg);
+    /* لجعل الأيقونة مقلوبة*/
+    transition: color 0.3s ease, transform 0.3s ease;
+    /* إضافة تأثيرات التحول */
+}
+
+/* تأثير عند تحريك الماوس فوق الأيقونة */
+.category-card i:hover {
+    color: var(--primary-color);
+    /* تغيير اللون عند التحريك */
+    transform: translateY(-5px);
+    /* رفع الأيقونة للأعلى قليلاً عند التحريك */
+}
+
+/* عند تحريك الماوس فوق البطاقة بشكل عام */
+.category-card:hover i {
+    font-size: 35px;
+    /* تحديد حجم الأيقونة */
+    color: var(--primary-color);
+    /* تغيير اللون عند التحريك فوق البطاقة */
+    transform: rotate(360deg);
+    /* التدوير عند تحريك الماوس فوق البطاقة */
+}
+
+/* Educational Videos */
+.educational-section {
+    margin-bottom: 10px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+/* تنسيق الحاوية الرئيسية للعناصر */
+.video-item {
+    display: flex;
+    /* لعرض العنصر في شكل صف */
+    flex-direction: column;
+    /* ترتيب العناصر عمودياً */
+    align-items: center;
+    /* محاذاة العناصر في المنتصف */
+    margin-bottom: 10px;
+    /* مسافة بين العناصر */
+    padding: 10px;
+    /* إضافة padding */
+    border-radius: 15px;
+    /* زوايا دائرية */
+    background-color: #fff;
+    /* خلفية بيضاء */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* تأثير الظل */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* إضافة تأثيرات التحول */
+}
+
+/* تنسيق الصورة المصغرة */
+.video-thumbnail {
+    position: relative;
+    width: 100%;
+    /* عرض ثابت */
+    height: 200px;
+    /* ارتفاع ثابت */
+    background-color: #f4f4f4;
+    /* خلفية فاتحة */
+    border-radius: 8px;
+    /* زوايا دائرية للصورة */
+    display: flex;
+    justify-content: center;
+    /* محاذاة الأيقونة في المنتصف */
+    align-items: center;
+    /* محاذاة الأيقونة في المنتصف عموديًا */
+    margin-bottom: 20px;
+    /* مسافة بين الصورة والفاصل */
+    overflow: hidden;
+    /* لضمان عدم ظهور أي محتوى خارج الحدود */
+}
+
+.video-thumbnail i {
+    font-size: 45px;
+    /* حجم الأيقونة */
+    color: #000;
+    /* اللون الافتراضي للأيقونة */
+    transition: color 0.3s ease;
+    /* تأثير سلاسة اللون */
+}
+
+/* تنسيق معلومات الفيديو */
+.video-info h3 {
+    font-size: 20px;
+    /* حجم الخط */
+    color: var(--primary-color);
+    /* اللون الأساسي */
+    text-align: center;
+}
+
+.video-info p {
+    margin: 5px 0 0;
+    /* مسافة بسيطة بين العنوان والوصف */
+    font-size: 17px;
+    /* حجم الخط للوصف */
+    color: #222222;
+    /* لون فاتح للوصف */
+}
+
+/* تأثير عند تحريك الماوس فوق الفيديو */
+.video-item:hover {
+    transform: translateY(-5px);
+    /* رفع العنصر عند التحريك */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    /* زيادة الظل عند التحريك */
+}
+
+/* Floating Quiz Button */
+.floating-quiz-btn {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 50;
+}
+
+.floating-quiz-btn:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+.quiz-icon {
+    font-size: 20px;
+    margin-left: 5px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-color);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 7% auto;
+    max-width: 700px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: modalFadeIn 0.5s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-modal {
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-modal:hover {
+    color: red;
+    transform: rotate(360deg);
+    /* لجعل الأيقونة مقلوبة*/
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-minimized-video:hover {
+    color: red;
+    transform: rotate(360deg);
+    /* لجعل الأيقونة مقلوبة*/
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+/* Quiz Styles */
+.quiz-container {
+    padding: 10px;
+}
+
+.quiz-question {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: var(--dark-text);
+    text-align: center;
+    font-weight: bold;
+}
+
+.quiz-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.quiz-option {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid #f5f5f5;
+}
+
+.quiz-option:hover {
+    background-color: #e9e9e9;
+}
+
+.quiz-option.selected {
+    border-color: var(--primary-color);
+}
+
+.quiz-option.correct {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.quiz-option.wrong {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+}
+
+.quiz-feedback {
+    text-align: center;
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    display: none;
+}
+
+.quiz-feedback.correct {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.quiz-feedback.wrong {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.quiz-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: bold;
+}
+
+.quiz-btn:hover {
+    background-color: var(--accent-color);
+}
+
+.quiz-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.quiz-progress {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Video Modal */
+.video-modal-content {
+    max-width: 900px;
+}
+
+.video-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.minimize-video,
+.restore-video {
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+#youtube-player {
+    width: 100%;
+    height: 500px;
+}
+
+/* Minimized Video */
+#minimized-video {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 90;
+    transition: var(--transition);
+}
+
+.minimized-video-content {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    gap: 10px;
+}
+
+.minimized-video-icon {
+    font-size: 20px;
+}
+
+.restore-video,
+.close-minimized-video {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    padding: 0px 0 20px;
+    margin-top: 50px;
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 17px;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .times-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .main-menu {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu-item {
+        margin-bottom: 10px;
+    }
+
+    .submenu {
+        position: static;
+        visibility: visible;
+        opacity: 1;
+        transform: none;
+        box-shadow: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        padding: 0;
+    }
+
+    .menu-item:hover .submenu {
+        max-height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        height: 350px;
+    }
+
+    .hero h2 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .times-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quran-options {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+
+    #youtube-player {
+        height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .times-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        margin: 20px 10px;
+    }
+
+    .floating-quiz-btn {
+        bottom: 20px;
+        left: 20px;
+        padding: 8px 15px;
+    }
+
+    #minimized-video {
+        bottom: 20px;
+        right: 20px;
+    }
+}
