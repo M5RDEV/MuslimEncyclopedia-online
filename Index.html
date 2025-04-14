@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="icon" href="img/Logo.png">
+    <title>موسوعة المسلم</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="img/logo.png" alt="شعار الموقع">
+                <h1>موسوعة المسلم</h1>
+            </div>
+        </div>
+    </header>
+
+    <!--Prayer Times-->
+    <div class="container">
+        <!-- Prayer Times -->
+        <section class="prayer-times">
+            <h2>مواقيت الصلاة</h2>
+            <div class="times-grid">
+                <div class="prayer-time">
+                    <h3>الفــجــر</h3>
+                    <p>04:32</p>
+                </div>
+                <div class="prayer-time">
+                    <h3>الظــهــر</h3>
+                    <p>12:15</p>
+                </div>
+                <div class="prayer-time">
+                    <h3>العــصــر</h3>
+                    <p>15:45</p>
+                </div>
+                <div class="prayer-time">
+                    <h3>المــغــرب</h3>
+                    <p>18:23</p>
+                </div>
+                <div class="prayer-time">
+                    <h3>العــشــاء</h3>
+                    <p>19:53</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quran Section -->
+        <section id="quran" class="quran-section">
+            <h2 class="section-title">صوتيات القرآن الكريم</h2>
+            <p>استمع إلى تلاوات القرآن الكريم بأصوات نخبة من القراء أو تصفح المصحف الشريف بطباعات مختلفة</p>
+
+            <div class="quran-options">
+                <div class="quran-option">
+                    <h3>تلاوات مباشرة</h3>
+                    <p>استمع إلى إذاعة القرآن الكريم مباشرة عبر الإنترنت</p>
+                    <button id="listenButton" class="cta-button">اســــــــتـمـع الآن</button>
+                </div>
+
+                <div class="quran-option">
+                    <h3>تلاوات مسجلة</h3>
+                    <p>استمع إلى تلاوات القرآن الكريم بصوت أكثر من قارئ</p>
+                    <button class="cta-button" onclick="window.open('Readers/index.html', '_blank')">عرض
+                        التلاوات</button>
+                </div>
+
+                <div class="quran-option">
+                    <h3>المصحف الشريف</h3>
+                    <p>تــــصـــفــــح الــــمـــصـــحـــف الـــكــريــم</p>
+                    <button class="cta-button open-mushaf">عرض المصحف</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- المشغل المصغر -->
+        <div id="miniPlayer" class="mini-player">
+            <div class="mini-play-btn" id="miniPlayBtn">
+                <svg id="playPauseIcon" class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+            </div>
+            <div class="mini-content">
+                <div class="mini-title">إذاعة القرآن الكريم</div>
+                <div class="mini-subtitle">بث مباشر</div>
+            </div>
+            <div class="mini-controls">
+                </button>
+                <button id="closeMiniBtn" class="mini-btn" title="إغلاق">
+                    <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Categories -->
+        <h2 class="section-title">المحتويات الرئيسية</h2>
+        <section class="categories-grid">
+            <!-- سيتم توليد العناصر عبر JavaScript -->
+        </section>
+
+        <!-- Educational Videos -->
+        <section id="education" class="educational-section">
+            <h2 class="section-title">فيديوهات تعليمية</h2>
+            <div class="video-grid" id="videoContainer">
+                <!-- سيتم توليد العناصر عبر JavaScript -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>اختبر معلوماتك الإسلامية</h2>
+                <span class="close-modal"><i class="fa-solid fa-circle-xmark"></i></span>
+            </div>
+            <div class="modal-body">
+                <div class="quiz-container">
+                    <div class="quiz-question" id="quiz-question"></div>
+                    <div class="quiz-options" id="quiz-options"></div>
+                    <div class="quiz-feedback" id="quiz-feedback"></div>
+                    <div class="quiz-navigation">
+                        <div class="quiz-progress" id="quiz-progress">1 / 5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating quiz button -->
+    <button class="floating-quiz-btn">اختبر معلوماتك</button>
+
+    <!-- Footer -->
+    <footer>
+        <div class="copyright">
+            <p>جميع الحقوق محفوظة © 2025 موقع موسوعة المسلم | موقع مجاني بالكامل</p>
+        </div>
+    </footer>
+
+    <!-- Audio Element for Quran Radio -->
+    <audio id="quranAudio" style="display: none;">
+        <source src="https://qurango.net/radio/tarateel" type="audio/mpeg">
+        متصفحك لا يدعم تشغيل الصوتيات.
+    </audio>
+
+    <script src="Script/Script.js"></script>
+</body>
+
+</html>

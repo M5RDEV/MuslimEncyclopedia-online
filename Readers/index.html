@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع القرآن الكريم | تلاوات القراء</title>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- شاشة التحميل -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="quran-icon">
+                <i class="fas fa-quran"></i>
+            </div>
+            <p>جارٍ التحميل...</p>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-microphone-alt"></i> استمع إلى أفضل تلاوات القرآن الكريم</h1>
+            <p>تصفح وتستمع إلى تلاوات متنوعة لأشهر قراء العالم الإسلامي</p>
+        </div>
+    </header>
+
+    <!-- Featured Reciters -->
+    <section class="featured-section" id="recitersSection">
+        <div class="section-title">
+            <h2><i class="fas fa-headphones-alt"></i> تسجيلات صوتية</h2>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="ابحث عن قارئ...">
+            <button id="searchButton"><i class="fas fa-search"></i> بحث</button>
+        </div>
+
+        <div class="reciter-grid" id="reciterGrid"></div>
+    </section>
+
+    <!-- Surah Section -->
+    <section class="surah-section" id="surahSection">
+        <div class="surah-header">
+            <div class="reciter-logo">
+                <img id="reciterLogoImg" src="" alt="صورة القارئ" class="reciter-logo-img" loading="lazy">
+                <h2 id="surahReciterName"></h2>
+            </div>
+            <a href="#" class="back-btn" id="backBtn">
+                <i class="fas fa-arrow-right"></i>
+                <span>العودة</span>
+            </a>
+        </div>
+        <div class="search-bar" id="surahSearchBar">
+            <input type="text" id="surahSearchInput" placeholder="ابحث عن سورة...">
+            <button id="surahSearchButton"><i class="fas fa-search"></i> بحث</button>
+        </div>
+        <div class="surah-list" id="surahList"></div>
+    </section>
+
+    <!-- Audio Player -->
+    <div class="audio-player" id="audioPlayer">
+        <div class="player-container">
+            <div class="player-info">
+                <div id="nowPlaying"><i class="fas fa-music"></i> اختر سورة للاستماع</div>
+                <div class="time-display"><span id="currentTime">0:00</span> / <span id="duration">0:00</span></div>
+            </div>
+            <div class="player-controls">
+                <div class="player-main-controls">
+                    <button class="player-btn" id="prevBtn" title="السورة السابقة"><i
+                            class="fas fa-step-backward"></i></button>
+                    <button class="player-btn" id="playBtn" title="تشغيل/إيقاف"><i class="fas fa-play"></i></button>
+                    <button class="player-btn" id="nextBtn" title="السورة التالية"><i
+                            class="fas fa-step-forward"></i></button>
+                </div>
+                <div class="progress-container" id="progressContainer" title="شريط التقدم">
+                    <input type="range" class="progress-slider" id="progressSlider" min="0" max="100" value="0"
+                        step="0.1">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="volume-control">
+                    <button class="player-btn" id="volumeBtn" title="تحكم بالصوت"><i
+                            class="fas fa-volume-up"></i></button>
+                    <input type="range" min="0" max="1" step="0.01" value="1" class="volume-slider" id="volumeSlider">
+                </div>
+                <div class="player-actions">
+                    <button class="download-btn" id="downloadBtn" title="تحميل السورة">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <audio id="audioElement"></audio>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="notificationText">تم نسخ الرابط بنجاح</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="copyright">
+            <p>جميع الحقوق محفوظة © 2025 موقع موسوعة المسلم | موقع مجاني بالكامل</p>
+        </div>
+    </footer>
+
+    <script src="script/script.js"></script>
+</body>
+
+</html>

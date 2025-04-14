@@ -12,13 +12,102 @@ document.addEventListener('DOMContentLoaded', function () {
                 targetContent.style.display = 'block';
                 targetContent.classList.remove('hidden-content');
                 this.textContent = 'إخفاء المحتوى';
-            } else {
-                // If it's currently visible, hide it
-                targetContent.style.display = 'none';
-                targetContent.classList.add('hidden-content');
-                this.textContent = this.textContent.replace('إخفاء', 'عرض');
             }
         });
+    });
+
+    // Quran Player Functionality
+    const listenButton = document.getElementById('listenButton');
+    const miniPlayer = document.getElementById('miniPlayer');
+    const quranAudio = document.getElementById('quranAudio');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const miniPlayBtn = document.getElementById('miniPlayBtn');
+    const closeMiniBtn = document.getElementById('closeMiniBtn');
+
+    let isPlaying = false;
+    let isPaused = false;
+
+    function togglePlayer() {
+        if (isPlaying) {
+            if (isPaused) {
+                resumePlayer();
+            } else {
+                pausePlayer();
+            }
+        } else {
+            startPlayer();
+        }
+    }
+
+    function startPlayer() {
+        // إيقاف أي فيديو يعمل حالياً
+        pauseAllVideos();
+
+        miniPlayer.style.display = 'flex';
+        listenButton.textContent = 'إيقاف مؤقت';
+        listenButton.classList.add('active');
+
+        quranAudio.play().then(() => {
+            isPlaying = true;
+            isPaused = false;
+            updatePlayPauseIcon();
+        }).catch(error => {
+            console.error('حدث خطأ في تشغيل الصوت:', error);
+            alert('تعذر تشغيل البث المباشر. يرجى التحقق من اتصال الإنترنت أو إعدادات المتصفح.');
+        });
+    }
+
+    function pausePlayer() {
+        quranAudio.pause();
+        isPaused = true;
+        listenButton.textContent = 'استئناف التشغيل';
+        updatePlayPauseIcon();
+    }
+
+    function resumePlayer() {
+        quranAudio.play();
+        isPaused = false;
+        listenButton.textContent = 'إيقاف مؤقت';
+        updatePlayPauseIcon();
+    }
+
+    function stopPlayer() {
+        quranAudio.pause();
+        quranAudio.currentTime = 0;
+        miniPlayer.style.display = 'none';
+        listenButton.textContent = 'اســــــــتـمـع الآن';
+        listenButton.classList.remove('active');
+        isPlaying = false;
+        isPaused = false;
+        updatePlayPauseIcon();
+    }
+
+    function updatePlayPauseIcon() {
+        if (isPlaying && !isPaused) {
+            playPauseIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+        } else {
+            playPauseIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+        }
+    }
+
+    // Event Listeners for Quran Player
+    listenButton.addEventListener('click', togglePlayer);
+    closeMiniBtn.addEventListener('click', stopPlayer);
+    miniPlayBtn.addEventListener('click', togglePlayer);
+    quranAudio.volume = 0.9; // Default volume
+
+    quranAudio.addEventListener('pause', () => {
+        if (isPlaying && !isPaused) {
+            isPaused = true;
+            updatePlayPauseIcon();
+        }
+    });
+
+    quranAudio.addEventListener('play', () => {
+        if (isPaused) {
+            isPaused = false;
+            updatePlayPauseIcon();
+        }
     });
 
     // Quiz Modal
@@ -27,22 +116,27 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeQuizBtn = quizModal.querySelector('.close-modal');
 
     quizBtn.addEventListener('click', function () {
-        quizModal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        quizModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        startQuiz();
     });
 
     closeQuizBtn.addEventListener('click', function () {
         quizModal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        document.body.style.overflow = 'auto';
+        clearTimeout(autoNextTimer);
     });
 
-    // Handle quiz functionality
-    const quizOptions = document.querySelectorAll('.quiz-option');
-    const quizFeedback = document.getElementById('quiz-feedback');
-    const quizNextBtn = document.getElementById('quiz-next');
+    window.addEventListener('click', function (event) {
+        if (event.target === quizModal) {
+            quizModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            clearTimeout(autoNextTimer);
+        }
+    });
 
-    // Quiz questions array
-    const quizQuestions = [
+    // Full quiz questions array
+    const allQuizQuestions = [
         {
             question: "من هو أول من جمع المصحف الشريف؟",
             options: [
@@ -97,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 { text: "أني مسني الضر وأنت أرحم الراحمين", correct: true }
             ]
         },
+
         {
             question: "من ينتهي نسبه الي نوح عليه السلام؟",
             options: [
@@ -951,22 +1046,281 @@ document.addEventListener('DOMContentLoaded', function () {
                 { text: "فرحون", correct: false },
                 { text: "فاكهون", correct: true }
             ]
+        },
+        // Adding more questions to have more than 25 in total
+        {
+            question: "ما هي السورة التي تسمى بـ 'أم القرآن'؟",
+            options: [
+                { text: "سورة البقرة", correct: false },
+                { text: "سورة الفاتحة", correct: true },
+                { text: "سورة الإخلاص", correct: false },
+                { text: "سورة يس", correct: false }
+            ]
+        },
+        {
+            question: "من هو النبي الذي يلقب بـ 'أبو البشر'؟",
+            options: [
+                { text: "نوح عليه السلام", correct: false },
+                { text: "إبراهيم عليه السلام", correct: false },
+                { text: "آدم عليه السلام", correct: true },
+                { text: "محمد صلى الله عليه وسلم", correct: false }
+            ]
+        },
+        {
+            question: "ما هي أول سورة نزلت على النبي محمد صلى الله عليه وسلم؟",
+            options: [
+                { text: "سورة الفاتحة", correct: false },
+                { text: "سورة العلق", correct: true },
+                { text: "سورة المدثر", correct: false },
+                { text: "سورة القلم", correct: false }
+            ]
+        },
+        // Add more questions to make a total of at least 30 questions
+        {
+            question: "من هم الخلفاء الراشدون؟",
+            options: [
+                { text: "أبو بكر، عمر، عثمان، علي", correct: true },
+                { text: "أبو بكر، عمر، معاوية، علي", correct: false },
+                { text: "عمر، عثمان، علي، الحسن", correct: false },
+                { text: "أبو بكر، عمر، عثمان، معاوية", correct: false }
+            ]
+        },
+        {
+            question: "من هي أول امرأة آمنت بالرسول محمد صلى الله عليه وسلم؟",
+            options: [
+                { text: "عائشة رضي الله عنها", correct: false },
+                { text: "خديجة رضي الله عنها", correct: true },
+                { text: "فاطمة رضي الله عنها", correct: false },
+                { text: "أم سلمة رضي الله عنها", correct: false }
+            ]
+        },
+        {
+            question: "كم عدد أجزاء القرآن الكريم؟",
+            options: [
+                { text: "29 جزء", correct: false },
+                { text: "30 جزء", correct: true },
+                { text: "31 جزء", correct: false },
+                { text: "33 جزء", correct: false }
+            ]
+        },
+        {
+            question: "من هو النبي الذي ألقي في النار ولم تحرقه؟",
+            options: [
+                { text: "موسى عليه السلام", correct: false },
+                { text: "نوح عليه السلام", correct: false },
+                { text: "إبراهيم عليه السلام", correct: true },
+                { text: "يعقوب عليه السلام", correct: false }
+            ]
+        },
+        {
+            question: "من هو الصحابي الملقب بـ 'أمين الأمة'؟",
+            options: [
+                { text: "أبو بكر الصديق", correct: false },
+                { text: "عمر بن الخطاب", correct: false },
+                { text: "عثمان بن عفان", correct: false },
+                { text: "أبو عبيدة بن الجراح", correct: true }
+            ]
+        },
+        {
+            question: "كم سنة استمرت دعوة النبي محمد صلى الله عليه وسلم؟",
+            options: [
+                { text: "13 سنة", correct: false },
+                { text: "23 سنة", correct: true },
+                { text: "33 سنة", correct: false },
+                { text: "43 سنة", correct: false }
+            ]
+        },
+        {
+            question: "متى فرضت الصلاة على المسلمين؟",
+            options: [
+                { text: "قبل الهجرة", correct: true },
+                { text: "بعد الهجرة", correct: false },
+                { text: "في غزوة بدر", correct: false },
+                { text: "بعد فتح مكة", correct: false }
+            ]
+        },
+        {
+            question: "ما هي أصغر سورة في القرآن الكريم؟",
+            options: [
+                { text: "سورة الفيل", correct: false },
+                { text: "سورة العصر", correct: false },
+                { text: "سورة الكوثر", correct: true },
+                { text: "سورة الناس", correct: false }
+            ]
+        },
+        {
+            question: "ما هو اسم زوجة فرعون التي آمنت بموسى عليه السلام؟",
+            options: [
+                { text: "مريم", correct: false },
+                { text: "سارة", correct: false },
+                { text: "آسية", correct: true },
+                { text: "هاجر", correct: false }
+            ]
+        },
+        {
+            question: "من هو النبي الذي كلم الله تعالى مباشرة؟",
+            options: [
+                { text: "إبراهيم عليه السلام", correct: false },
+                { text: "محمد صلى الله عليه وسلم", correct: false },
+                { text: "موسى عليه السلام", correct: true },
+                { text: "عيسى عليه السلام", correct: false }
+            ]
+        },
+        {
+            question: "أين ولد النبي محمد صلى الله عليه وسلم؟",
+            options: [
+                { text: "المدينة المنورة", correct: false },
+                { text: "مكة المكرمة", correct: true },
+                { text: "الطائف", correct: false },
+                { text: "جدة", correct: false }
+            ]
+        },
+        {
+            question: "ما هو عدد الأشهر الحرم؟",
+            options: [
+                { text: "3 أشهر", correct: false },
+                { text: "4 أشهر", correct: true },
+                { text: "5 أشهر", correct: false },
+                { text: "6 أشهر", correct: false }
+            ]
+        },
+        {
+            question: "من هو أول شهيد في الإسلام؟",
+            options: [
+                { text: "سمية بنت خياط", correct: true },
+                { text: "حمزة بن عبد المطلب", correct: false },
+                { text: "ياسر بن عامر", correct: false },
+                { text: "بلال بن رباح", correct: false }
+            ]
+        },
+        {
+            question: "كم عدد أركان الإيمان؟",
+            options: [
+                { text: "خمسة أركان", correct: false },
+                { text: "ستة أركان", correct: true },
+                { text: "سبعة أركان", correct: false },
+                { text: "ثمانية أركان", correct: false }
+            ]
+        },
+        {
+            question: "ما هي السورة التي تعادل ثلث القرآن؟",
+            options: [
+                { text: "سورة الفاتحة", correct: false },
+                { text: "سورة الكهف", correct: false },
+                { text: "سورة يس", correct: false },
+                { text: "سورة الإخلاص", correct: true }
+            ]
+        },
+        {
+            question: "ما اسم زوجة النبي إبراهيم عليه السلام وأم نبي الله إسحاق؟",
+            options: [
+                { text: "سارة", correct: true },
+                { text: "هاجر", correct: false },
+                { text: "آسية", correct: false },
+                { text: "مريم", correct: false }
+            ]
+        },
+        {
+            question: "من هو آخر الأنبياء والمرسلين؟",
+            options: [
+                { text: "عيسى عليه السلام", correct: false },
+                { text: "إبراهيم عليه السلام", correct: false },
+                { text: "محمد صلى الله عليه وسلم", correct: true },
+                { text: "موسى عليه السلام", correct: false }
+            ]
+        },
+        {
+            question: "ما هي الصلاة التي تصلى ركعتين ويجهر فيها بالقراءة؟",
+            options: [
+                { text: "الظهر", correct: false },
+                { text: "العصر", correct: false },
+                { text: "الفجر", correct: true },
+                { text: "العشاء", correct: false }
+            ]
+        },
+        {
+            question: "من هو الصحابي الملقب بـ 'سيف الله المسلول'؟",
+            options: [
+                { text: "خالد بن الوليد", correct: true },
+                { text: "سعد بن أبي وقاص", correct: false },
+                { text: "أبو عبيدة بن الجراح", correct: false },
+                { text: "الزبير بن العوام", correct: false }
+            ]
+        },
+        {
+            question: "كم عدد غزوات النبي صلى الله عليه وسلم؟",
+            options: [
+                { text: "17 غزوة", correct: false },
+                { text: "21 غزوة", correct: false },
+                { text: "27 غزوة", correct: true },
+                { text: "33 غزوة", correct: false }
+            ]
         }
     ];
 
+    let quizQuestions = [];
     let currentQuestionIndex = 0;
     let selectedOption = null;
     let quizAnswered = false;
+    let correctAnswers = 0;
+    let totalQuestions = 20;
+    let autoNextTimer = null;
 
-    // Initialize quiz
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        correctAnswers = 0;
+        quizAnswered = false;
+        selectedOption = null;
+        clearTimeout(autoNextTimer);
+
+        // Reset UI
+        const quizContainer = document.querySelector('.quiz-container');
+        quizContainer.innerHTML = `
+            <div class="quiz-question" id="quiz-question"></div>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+            <div class="quiz-navigation">
+                <div class="quiz-progress" id="quiz-progress">1 / ${totalQuestions}</div>
+            </div>
+        `;
+        quizContainer.style.opacity = '1';
+
+        quizQuestions = getRandomQuestions(allQuizQuestions, totalQuestions);
+        loadQuestion(0);
+    }
+
+    function getRandomQuestions(questions, count) {
+        const shuffled = [...questions].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     function loadQuestion(index) {
+        clearTimeout(autoNextTimer);
+
+        const feedback = document.getElementById('quiz-feedback');
+        if (feedback) {
+            feedback.style.display = 'none';
+            feedback.className = 'quiz-feedback';
+            feedback.innerHTML = '';
+        }
+
         const question = quizQuestions[index];
         document.getElementById('quiz-question').textContent = question.question;
 
         const optionsContainer = document.getElementById('quiz-options');
         optionsContainer.innerHTML = '';
 
-        question.options.forEach((option, i) => {
+        const shuffledOptions = shuffleArray([...question.options]);
+
+        shuffledOptions.forEach((option) => {
             const optionElement = document.createElement('div');
             optionElement.className = 'quiz-option';
             optionElement.textContent = option.text;
@@ -977,12 +1331,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionElement.addEventListener('click', function () {
                 if (quizAnswered) return;
 
-                // Remove previous selection
                 document.querySelectorAll('.quiz-option').forEach(opt => {
                     opt.classList.remove('selected');
                 });
 
-                // Select this option
                 this.classList.add('selected');
                 selectedOption = this;
                 checkAnswer();
@@ -991,221 +1343,139 @@ document.addEventListener('DOMContentLoaded', function () {
             optionsContainer.appendChild(optionElement);
         });
 
-        // Update progress
-        document.getElementById('quiz-progress').textContent = `${index + 1} / ${quizQuestions.length}`;
-
-        // Reset state
-        quizFeedback.style.display = 'none';
-        quizFeedback.className = 'quiz-feedback';
-        quizNextBtn.disabled = true;
+        document.getElementById('quiz-progress').textContent = `${index + 1} / ${totalQuestions}`;
         quizAnswered = false;
         selectedOption = null;
     }
 
     function checkAnswer() {
-        if (!selectedOption) return;
+        if (!selectedOption || quizAnswered) return;
 
         quizAnswered = true;
         const isCorrect = selectedOption.hasAttribute('data-correct');
 
         if (isCorrect) {
             selectedOption.classList.add('correct');
-            quizFeedback.textContent = 'أحسنت! إجابة صحيحة';
-            quizFeedback.classList.add('correct');
+            document.getElementById('quiz-feedback').innerHTML = `
+                <i class="fas fa-check-circle"></i> 
+                <span>أحسنت! إجابة صحيحة</span>
+                <div class="feedback-details" style="margin-top:10px;font-weight:normal;"></div>
+            `;
+            document.getElementById('quiz-feedback').className = 'quiz-feedback correct';
+            correctAnswers++;
         } else {
             selectedOption.classList.add('wrong');
-            quizFeedback.textContent = 'للأسف، إجابة خاطئة';
-            quizFeedback.classList.add('wrong');
 
-            // Highlight correct answer
+            let correctAnswerText = '';
             document.querySelectorAll('.quiz-option').forEach(opt => {
                 if (opt.hasAttribute('data-correct')) {
                     opt.classList.add('correct');
+                    correctAnswerText = opt.textContent;
                 }
             });
+
+            document.getElementById('quiz-feedback').innerHTML = `
+                <i class="fas fa-times-circle"></i> 
+                <span>للأسف، إجابة خاطئة</span>
+                <div class="feedback-details" style="margin-top:10px;font-weight:normal;">
+                    الإجابة الصحيحة: ${correctAnswerText}
+                </div>
+            `;
+            document.getElementById('quiz-feedback').className = 'quiz-feedback wrong';
         }
 
-        quizFeedback.style.display = 'block';
-        quizNextBtn.disabled = false;
+        const feedbackElement = document.getElementById('quiz-feedback');
+        feedbackElement.style.display = 'block';
+        feedbackElement.style.animation = 'none';
+        setTimeout(() => {
+            feedbackElement.style.animation = isCorrect ? 'pulseGreen 1s' : 'pulseRed 1s';
+        }, 10);
+
+        clearTimeout(autoNextTimer);
+        autoNextTimer = setTimeout(() => {
+            goToNextQuestion();
+        }, 2000);
     }
 
-    // Load initial question
-    loadQuestion(currentQuestionIndex);
+    function goToNextQuestion() {
+        const quizContainer = document.querySelector('.quiz-container');
+        quizContainer.style.opacity = '0';
 
-    // Handle next question button
-    quizNextBtn.addEventListener('click', function () {
-        currentQuestionIndex++;
+        setTimeout(() => {
+            currentQuestionIndex++;
 
-        if (currentQuestionIndex < quizQuestions.length) {
-            loadQuestion(currentQuestionIndex);
-        } else {
-            // Quiz finished
-            document.getElementById('quiz-question').textContent = 'انتهى الاختبار!';
-            document.getElementById('quiz-options').innerHTML = '';
-            quizFeedback.textContent = 'شكراً لمشاركتك، نتمنى أن تكون استفدت';
-            quizFeedback.className = 'quiz-feedback correct';
-            quizFeedback.style.display = 'block';
-            quizNextBtn.disabled = true;
-
-            // Add restart button
-            const restartBtn = document.createElement('button');
-            restartBtn.className = 'quiz-btn';
-            restartBtn.textContent = 'إعادة الاختبار';
-            restartBtn.addEventListener('click', function () {
-                currentQuestionIndex = 0;
+            if (currentQuestionIndex < totalQuestions) {
                 loadQuestion(currentQuestionIndex);
-            });
-
-            document.querySelector('.quiz-navigation').appendChild(restartBtn);
-        }
-    });
-
-    // Video Modal
-    const videoModal = document.getElementById('video-modal');
-    const minimizedVideo = document.getElementById('minimized-video');
-    let player = null;
-
-    // Click event for open video button
-    const openVideoButtons = document.querySelectorAll('.open-video');
-    openVideoButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const videoId = this.getAttribute('data-video');
-            openVideoModal(videoId);
-        });
-    });
-
-    // Click events for view video buttons
-    const viewVideoButtons = document.querySelectorAll('.view-video-btn');
-    viewVideoButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Default videos for educational content
-            const videoIds = ['9ZvNMIvbn0k', 'lFJCdUPfbCw', 'kS3LJ4j8vww'];
-            const randomIndex = Math.floor(Math.random() * videoIds.length);
-            openVideoModal(videoIds[randomIndex]);
-        });
-    });
-
-    // Close video modal
-    const closeVideoBtn = videoModal.querySelector('.close-modal');
-    closeVideoBtn.addEventListener('click', function () {
-        closeVideoModal();
-    });
-
-    // Minimize video
-    const minimizeBtn = videoModal.querySelector('.minimize-video');
-    minimizeBtn.addEventListener('click', function () {
-        minimizeVideo();
-    });
-
-    // Restore minimized video
-    const restoreBtn = minimizedVideo.querySelector('.restore-video');
-    restoreBtn.addEventListener('click', function () {
-        restoreVideo();
-    });
-
-    // Close minimized video
-    const closeMinimizedBtn = minimizedVideo.querySelector('.close-minimized-video');
-    closeMinimizedBtn.addEventListener('click', function () {
-        closeMinimizedVideo();
-    });
-
-    // Functions for handling video functionality
-    function openVideoModal(videoId) {
-        // Create YouTube iframe if it doesn't exist
-        const playerContainer = document.getElementById('youtube-player');
-        playerContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-
-        // Show modal
-        videoModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+                quizContainer.style.opacity = '1';
+            } else {
+                showFinalResults();
+            }
+        }, 300);
     }
 
-    function closeVideoModal() {
-        const playerContainer = document.getElementById('youtube-player');
-        playerContainer.innerHTML = '';
-        videoModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
+    function showFinalResults() {
+        const quizContainer = document.querySelector('.quiz-container');
+        const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
+
+        quizContainer.innerHTML = `
+            <div class="quiz-complete">
+                <div class="quiz-question">انتهى الاختبار!</div>
+                <div class="quiz-feedback correct" style="display: block; animation: pulseGreen 1s">
+                    <div class="score-result">
+                        <div class="score-percentage">${scorePercentage}%</div>
+                        <div class="score-text">لقد أجبت على ${correctAnswers} من أصل ${totalQuestions} سؤال بشكل صحيح</div>
+                    </div>
+                </div>
+                <div class="quiz-navigation">
+                    <button class="quiz-btn quiz-restart">إعادة الاختبار</button>
+                </div>
+            </div>
+        `;
+        quizContainer.style.opacity = '1';
+
+        document.querySelector('.quiz-restart').addEventListener('click', startQuiz);
     }
 
-    function minimizeVideo() {
-        videoModal.style.display = 'none';
-        minimizedVideo.classList.remove('hidden');
-    }
+    // Prayer Times Functionality
+    const MAX_RETRIES = 20;
+    let retryCounter = 0;
+    let retryTimeoutId = null;
 
-    function restoreVideo() {
-        minimizedVideo.classList.add('hidden');
-        videoModal.style.display = 'block';
-    }
-
-    function closeMinimizedVideo() {
-        minimizedVideo.classList.add('hidden');
-        closeVideoModal();
-    }
-
-    // Close modals when clicking outside of them
-    window.addEventListener('click', function (event) {
-        if (event.target === quizModal) {
-            quizModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-        if (event.target === videoModal) {
-            closeVideoModal();
-        }
-    });
-
-    // Function to get prayer times based on current location
     function getPrayerTimes(retry = false) {
-        // Only increment retry counter when this is a retry attempt
         if (retry) {
             retryCounter++;
             console.log(`Retry attempt: ${retryCounter} of ${MAX_RETRIES}`);
         } else {
-            // Reset counter if this is a fresh attempt (not a retry)
             retryCounter = 0;
         }
 
-        // Check if we've reached the maximum retries
         if (retryCounter >= MAX_RETRIES) {
             console.log("Maximum retry attempts reached. Stopping automatic updates.");
-            return; // Exit without scheduling more retries
+            return;
         }
 
-        // Show loading message
         setAllTimesToLoading();
 
-        // Try to get user's current location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    // Success - got location
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
                     fetchPrayerTimesFromAPI(latitude, longitude);
                 },
                 (error) => {
-                    // Error getting location - set to 00:00
                     console.error("Error getting location:", error);
                     setAllTimesToDefault();
-                    // Schedule retry after 2 minutes
                     scheduleRetry();
                 }
             );
         } else {
-            // Geolocation not supported - set to 00:00
             console.error("Geolocation not supported by this browser");
             setAllTimesToDefault();
-            // Schedule retry after 2 minutes
             scheduleRetry();
         }
     }
 
-    // Maximum number of retry attempts
-    const MAX_RETRIES = 20;
-
-    // Counter for retry attempts
-    let retryCounter = 0;
-
-    // Set all prayer times to "جاري التحديث"
     function setAllTimesToLoading() {
         const prayerElements = document.querySelectorAll('.prayer-time p');
         prayerElements.forEach(el => {
@@ -1213,7 +1483,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Set all prayer times to 00:00
     function setAllTimesToDefault() {
         const prayerElements = document.querySelectorAll('.prayer-time p');
         prayerElements.forEach(el => {
@@ -1221,15 +1490,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Fetch prayer times from API using coordinates
     function fetchPrayerTimesFromAPI(latitude, longitude) {
-        // Get current date
         const today = new Date();
         const day = today.getDate();
-        const month = today.getMonth() + 1; // JS months are 0-indexed
+        const month = today.getMonth() + 1;
         const year = today.getFullYear();
 
-        // API URL (using Aladhan API)
         const apiUrl = `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${latitude}&longitude=${longitude}&method=4`;
 
         fetch(apiUrl)
@@ -1242,7 +1508,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.code === 200 && data.data && data.data.timings) {
                     updatePrayerTimesDisplay(data.data.timings);
-                    // If successful, clear any scheduled retries and reset counter
                     clearScheduledRetry();
                     retryCounter = 0;
                 } else {
@@ -1251,14 +1516,11 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => {
                 console.error("Error fetching prayer times:", error);
-                // Set to 00:00 if there's an error
                 setAllTimesToDefault();
-                // Schedule retry after 2 minutes
                 scheduleRetry();
             });
     }
 
-    // Update the display with fetched prayer times
     function updatePrayerTimesDisplay(timings) {
         const prayerTimes = [
             { name: 'الفجر', time: formatTimeTo12Hour(timings.Fajr) },
@@ -1276,25 +1538,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Format time to 12-hour format with Arabic AM/PM
     function formatTimeTo12Hour(timeString) {
         try {
-            // Get HH:MM part only
             const timePart = timeString.split(" ")[0];
             const [hours, minutes] = timePart.split(":");
 
-            // Convert to integers
             let hour = parseInt(hours);
             const min = minutes;
 
-            // Determine AM/PM
             const ampm = hour >= 12 ? 'م' : 'ص';
-
-            // Convert to 12-hour format
             hour = hour % 12;
-            hour = hour ? hour : 12; // 0 should become 12
+            hour = hour ? hour : 12;
 
-            // Return formatted time
             return `${hour}:${min} ${ampm}`;
         } catch (error) {
             console.error("Error formatting time:", error);
@@ -1302,29 +1557,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Variable to store the retry timeout ID
-    let retryTimeoutId = null;
-
-    // Schedule a retry after 2 minutes
     function scheduleRetry() {
-        // Check if we've already reached max retries
         if (retryCounter >= MAX_RETRIES) {
             console.log("Maximum retry attempts reached. No more retries will be scheduled.");
             return;
         }
 
-        // Clear any existing retry timeouts first
         clearScheduledRetry();
 
-        // Set new timeout for 2 minutes (120000 ms)
         console.log("Scheduling retry in 2 minutes...");
         retryTimeoutId = setTimeout(() => {
             console.log("Retrying to fetch prayer times...");
-            getPrayerTimes(true); // true indicates this is a retry attempt
+            getPrayerTimes(true);
         }, 120000);
     }
 
-    // Clear any scheduled retries
     function clearScheduledRetry() {
         if (retryTimeoutId !== null) {
             clearTimeout(retryTimeoutId);
@@ -1332,35 +1579,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Function to check connection status
-    function isOnline() {
-        return navigator.onLine;
-    }
-
-    // Add event listeners for online/offline events
     window.addEventListener('online', () => {
         console.log("Connection restored. Retrying prayer times...");
         if (retryCounter < MAX_RETRIES) {
-            getPrayerTimes(); // Start fresh when connection is restored
+            getPrayerTimes();
         } else {
             console.log("Maximum retry attempts already reached. Manual refresh required.");
         }
     });
 
-    // Function to manually reset retry counter and force update
-    function manualRefresh() {
-        retryCounter = 0;
-        getPrayerTimes();
-    }
-
-    // Initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', getPrayerTimes);
-    // Or initialize immediately if DOM is already loaded
+    // Initialize prayer times
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         getPrayerTimes();
+    } else {
+        document.addEventListener('DOMContentLoaded', getPrayerTimes);
     }
 
-    //Main Section
+    // Main Section - Categories Grid
     const categories = [
         { id: "Prayer", icon: "🕌", title: "ما يتعلق بالصلاة", desc: "الوضوء و الصلاة و بعض الأخطاء المنتشرة و السن المهجورة فيهم" },
         { id: "hadith", icon: "📜", title: "الأحاديث النبوية", desc: "مجموعة من الأحاديث الصحيحة والحسنة عن رسول الله ﷺ" },
@@ -1386,20 +1621,19 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const gridContainer = document.querySelector('.categories-grid');
-
     categories.forEach(category => {
         const card = document.createElement('div');
         card.className = 'category-card';
         card.id = category.id;
         card.innerHTML = `
-        <div class="category-icon">${category.icon}</div>
-        <h3>${category.title}</h3>
-        <p>${category.desc}</p>
-        <i class="fa-solid fa-square-caret-down"></i>`;
+            <div class="category-icon">${category.icon}</div>
+            <h3>${category.title}</h3>
+            <p>${category.desc}</p>
+            <i class="fa-solid fa-square-caret-down"></i>`;
         gridContainer.appendChild(card);
     });
 
-    // Education Section
+    // Education Section - Videos
     const videos = [
         { title: "تعلم العقيدة", description: "شرح العقيدة الإسلامية الصحيحة", url: "https://youtu.be/SDvjN1JARso" },
         { title: "الإسلام والإيمان والإحسان", description: "تعلم الفرق بين الإسلام والإيمان والإحسان", url: "https://youtu.be/MX12Dcd5yIo" },
@@ -1443,12 +1677,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const videoContainer = document.getElementById("videoContainer");
-
-    // تخزين مراجع الفيديوهات النشطة
     let activeVideos = {};
-    let currentlyPlayingIndex = null;
 
-    // إضافة YouTube API
     function loadYouTubeAPI() {
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
@@ -1456,26 +1686,21 @@ document.addEventListener('DOMContentLoaded', function () {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
-    // استدعاء دالة تحميل API
     loadYouTubeAPI();
 
-    // استخراج معرف الفيديو من رابط يوتيوب
     function getVideoId(url) {
         if (!url || typeof url !== 'string') return '';
 
-        // التحقق من صحة الرابط
         if (!url.includes('youtu')) return '';
 
         let videoId = '';
 
-        // استخراج معرف الفيديو من الرابط
         if (url.includes('youtu.be/')) {
             videoId = url.split('youtu.be/')[1];
         } else if (url.includes('youtube.com/watch?v=')) {
             videoId = url.split('v=')[1];
         }
 
-        // إزالة أي معلمات إضافية من الرابط
         const ampersandPosition = videoId.indexOf('&');
         if (ampersandPosition !== -1) {
             videoId = videoId.substring(0, ampersandPosition);
@@ -1484,9 +1709,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return videoId;
     }
 
-    // الحصول على رابط الصورة المصغرة من معرف الفيديو
     function getThumbnailUrl(videoId) {
-        // استخدام صورة عالية الجودة من يوتيوب
         return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
     }
 
@@ -1494,33 +1717,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const videoId = getVideoId(video.url);
         let thumbnailHTML = '';
 
-        // إذا كان معرف الفيديو صالحًا، نعرض الصورة المصغرة
         if (videoId) {
             const thumbnailUrl = getThumbnailUrl(videoId);
             thumbnailHTML = `
-            <div class="thumbnail-overlay">
-                <i class="fa-solid fa-circle-play" data-index="${index}"></i>
-            </div>
-            <img src="${thumbnailUrl}" alt="${video.title}" class="thumbnail-image">
-        `;
+                <div class="thumbnail-overlay">
+                    <i class="fa-solid fa-circle-play" data-index="${index}"></i>
+                </div>
+                <img src="${thumbnailUrl}" alt="${video.title}" class="thumbnail-image">
+            `;
         } else {
-            // إذا لم يكن لدينا معرف فيديو صالح، نعرض أيقونة التشغيل فقط
             thumbnailHTML = `<i class="fa-solid fa-circle-play" data-index="${index}"></i>`;
         }
 
         const item = document.createElement("div");
         item.className = "video-item";
         item.innerHTML = `
-    <div class="video-thumbnail" data-video-id="${videoId}" data-index="${index}">
-        ${thumbnailHTML}
-    </div>
-    <div class="video-info">
-        <h3>${video.title}</h3>
-        <p>${video.description}</p>
-    </div>`;
+            <div class="video-thumbnail" data-video-id="${videoId}" data-index="${index}">
+                ${thumbnailHTML}
+            </div>
+            <div class="video-info">
+                <h3>${video.title}</h3>
+                <p>${video.description}</p>
+            </div>`;
         videoContainer.appendChild(item);
 
-        // إضافة CSS للصورة المصغرة وأيقونة التشغيل
         const thumbnailContainer = item.querySelector('.video-thumbnail');
         thumbnailContainer.style.position = 'relative';
         thumbnailContainer.style.overflow = 'hidden';
@@ -1554,7 +1774,6 @@ document.addEventListener('DOMContentLoaded', function () {
             playIcon.style.opacity = '0.9';
         }
 
-        // إضافة تأثير hover للأيقونة
         if (overlay) {
             thumbnailContainer.addEventListener('mouseover', () => {
                 overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.89)';
@@ -1570,7 +1789,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // دالة لإيقاف جميع الفيديوهات باستثناء الفيديو المحدد
     function pauseAllVideosExcept(exceptIndex) {
         Object.keys(activeVideos).forEach(index => {
             if (parseInt(index) !== exceptIndex) {
@@ -1582,57 +1800,56 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // دالة لإضافة مستمع الحدث لأيقونة التشغيل
     function addClickListenerToPlayIcon(playIcon) {
         playIcon.addEventListener("click", playVideo);
     }
 
-    // دالة تشغيل الفيديو
+    // دالة لإيقاف جميع الفيديوهات
+    function pauseAllVideos() {
+        Object.keys(activeVideos).forEach(index => {
+            const player = activeVideos[index];
+            if (player && typeof player.pauseVideo === 'function') {
+                player.pauseVideo();
+            }
+        });
+    }
+
+    // تعديل دالة تشغيل الفيديو لإيقاف البث الصوتي
     function playVideo() {
+        // إيقاف البث الصوتي إذا كان يعمل
+        if (isPlaying) {
+            pausePlayer();
+        }
+
+        // الكود الأصلي لتشغيل الفيديو
         const videoIndex = parseInt(this.getAttribute("data-index"));
         const thumbnailContainer = this.closest('.video-thumbnail');
         const videoId = thumbnailContainer.getAttribute('data-video-id');
 
-        // إذا كان معرف الفيديو صالحًا
         if (videoId) {
-            // إذا كان الفيديو قد تم تحميله مسبقًا، قم بتشغيله
             if (activeVideos[videoIndex]) {
-                // إيقاف جميع الفيديوهات الأخرى
                 pauseAllVideosExcept(videoIndex);
-
-                // تشغيل الفيديو المحدد
                 activeVideos[videoIndex].playVideo();
                 currentlyPlayingIndex = videoIndex;
                 return;
             }
 
-            // إيقاف جميع الفيديوهات الأخرى
             pauseAllVideosExcept(videoIndex);
 
-            // احفظ أبعاد الحاوية
-            const width = thumbnailContainer.offsetWidth;
-            const height = thumbnailContainer.offsetHeight;
-
-            // إنشاء عنصر div لاستضافة الفيديو
             const videoElement = document.createElement('div');
             videoElement.id = `youtube-player-${videoIndex}`;
             videoElement.style.width = '100%';
             videoElement.style.height = '100%';
 
-            // حفظ محتوى الحاوية الأصلي
             const originalContent = thumbnailContainer.innerHTML;
             thumbnailContainer.setAttribute('data-original-content', originalContent);
 
-            // استبدل محتوى الحاوية بعنصر الفيديو
             thumbnailContainer.innerHTML = '';
             thumbnailContainer.appendChild(videoElement);
 
-            // إنشاء مشغل يوتيوب
-            // تحقق من توفر YouTube API
             if (typeof YT !== 'undefined' && YT.Player) {
                 createYouTubePlayer(videoId, videoIndex, videoElement.id);
             } else {
-                // إذا لم يكن API جاهزًا بعد، انتظر حتى يصبح جاهزًا
                 window.onYouTubeIframeAPIReady = function () {
                     createYouTubePlayer(videoId, videoIndex, videoElement.id);
                 };
@@ -1642,7 +1859,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // دالة إنشاء مشغل يوتيوب
     function createYouTubePlayer(videoId, videoIndex, elementId) {
         activeVideos[videoIndex] = new YT.Player(elementId, {
             height: '100%',
@@ -1660,78 +1876,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     currentlyPlayingIndex = videoIndex;
                 },
                 'onStateChange': function (event) {
-                    // إذا بدأ التشغيل (بعد توقف مؤقت أو في البداية)
                     if (event.data === YT.PlayerState.PLAYING) {
-                        // إيقاف جميع الفيديوهات الأخرى
                         pauseAllVideosExcept(videoIndex);
                     }
-
-                    // إذا انتهى الفيديو، يمكنك إضافة سلوك هنا إذا لزم الأمر
                     if (event.data === YT.PlayerState.ENDED) {
-                        // اختياري: إعادة عرض الصورة المصغرة بعد انتهاء الفيديو
-                        // resetThumbnail(videoIndex);
+                        // Optional: resetThumbnail(videoIndex);
                     }
                 }
             }
         });
     }
 
-    // دالة اختيارية لإعادة عرض الصورة المصغرة
-    function resetThumbnail(videoIndex) {
-        const containers = document.querySelectorAll('.video-thumbnail');
-        containers.forEach(container => {
-            if (parseInt(container.getAttribute('data-index')) === videoIndex) {
-                const originalContent = container.getAttribute('data-original-content');
-                if (originalContent) {
-                    container.innerHTML = originalContent;
-
-                    // إعادة إضافة مستمعات الأحداث
-                    const playIcon = container.querySelector('.fa-circle-play');
-                    if (playIcon) {
-                        addClickListenerToPlayIcon(playIcon);
-                    }
-
-                    // إعادة إضافة تأثيرات hover
-                    const overlay = container.querySelector('.thumbnail-overlay');
-                    if (overlay && playIcon) {
-                        container.addEventListener('mouseover', () => {
-                            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                            playIcon.style.transform = 'scale(1.1)';
-                        });
-
-                        container.addEventListener('mouseout', () => {
-                            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-                            playIcon.style.transform = 'scale(1)';
-                        });
-                    }
-                }
-            }
-        });
-
-        // حذف المشغل من القائمة النشطة
-        delete activeVideos[videoIndex];
-        if (currentlyPlayingIndex === videoIndex) {
-            currentlyPlayingIndex = null;
-        }
-    }
-
-    // إضافة مستمع الحدث لكل thumbnail container
     document.querySelectorAll(".video-thumbnail").forEach(container => {
         container.addEventListener("click", function (e) {
-            // إذا تم النقر مباشرة على الحاوية وليس على أيقونة التشغيل
             if (e.target === this || e.target.classList.contains('thumbnail-image') || e.target.classList.contains('thumbnail-overlay')) {
                 const playIcon = this.querySelector('.fa-circle-play');
                 if (playIcon) {
-                    // محاكاة النقر على أيقونة التشغيل
                     playIcon.click();
                 } else if (this.hasAttribute('data-index')) {
-                    // إذا كان الفيديو موجود بالفعل (تم استبدال أيقونة التشغيل بـ iframe)
                     const videoIndex = parseInt(this.getAttribute('data-index'));
                     if (activeVideos[videoIndex]) {
-                        // إيقاف جميع الفيديوهات الأخرى
                         pauseAllVideosExcept(videoIndex);
-
-                        // تشغيل هذا الفيديو
                         activeVideos[videoIndex].playVideo();
                         currentlyPlayingIndex = videoIndex;
                     }
@@ -1740,7 +1905,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // إضافة مستمع الحدث لجميع أيقونات التشغيل
     document.querySelectorAll(".fa-circle-play").forEach(playIcon => {
         addClickListenerToPlayIcon(playIcon);
     });
