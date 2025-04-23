@@ -217,7 +217,7 @@ header {
     align-items: center;
     padding: 10px 15px;
     z-index: 1000;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #00000057;
     transition: all 0.3s ease;
 }
 
@@ -541,6 +541,21 @@ header {
     overflow-y: auto;
 }
 
+/* عند فتح المودال */
+.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+/* عند فتح المودال */
+.body-no-scroll {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
 .modal-content {
     background-color: white;
     margin: 7% auto;
@@ -620,6 +635,13 @@ header {
     font-weight: 600;
 }
 
+.modal-body p {
+    font-size: 25px;
+    line-height: 1.2;
+    text-align: center;
+    margin: 10px;
+}
+
 .close-modal {
     color: white;
     cursor: pointer;
@@ -642,6 +664,54 @@ header {
 
 .modal-body::-webkit-scrollbar {
     display: none;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-footer {
+    padding: 15px;
+    border-top: 1px solid var(--dark-text);
+    display: flex;
+    justify-content: center;
+}
+
+.nav-buttons-container {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-btn {
+    background-color: var(--dark-text);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background-color: var(--primary-color);
+    transform: scale(0.9);
+}
+
+.nav-btn i {
+    font-size: 17px;
+    text-align: center;
 }
 
 /* Quiz Styles */
