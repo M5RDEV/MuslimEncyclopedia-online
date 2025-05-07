@@ -445,12 +445,12 @@ document.addEventListener('DOMContentLoaded', function () {
             ]
         },
         {
-            question: "﴿ ........ وضحىها ۝۱ وٱلقمر إذا تلىها ۝۲ وٱلنهار إذا جلىها ۝۳﴾ أكمل المحذوف",
+            question: "﴿ ........ وضحاها ۝۱ والقمر إذا تلاها ۝۲ والنهار إذا جلاها ۝۳﴾ أكمل المحذوف",
             options: [
                 { text: "والضحي", correct: false },
                 { text: "والصبح", correct: false },
                 { text: "والفجر", correct: false },
-                { text: "والليل", correct: true }
+                { text: "والشمس", correct: true }
             ]
         },
         {
