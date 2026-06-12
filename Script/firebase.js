@@ -9,15 +9,6 @@ window.MUSLIM_ENCYCLOPEDIA_FIREBASE = {
         appId: "1:568815726247:web:22f8533f9996ed0bb03582"
     },
     entries: {
-        fullofflineCount: {
-            endpoint: "FullOffline"
-        },
-        offlineCount: {
-            endpoint: "Offline"
-        },
-        onlineCount: {
-            endpoint: "Online"
-        },
         websiteCount: {
             endpoint: "Website"
         }
